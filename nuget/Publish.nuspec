@@ -19,12 +19,12 @@ The Zero Install Publishing Tools (including the Feed Editor) are built upon thi
         </references>
     </metadata>
     <files>
-        <file src="..\build\Release\Tools\ZeroInstall.Capture.*" target="lib\net20" />
-        <file src="..\build\Release\Tools\ZeroInstall.Publish.*" target="lib\net20" />
+        <file src="..\build\Release\Tools\ZeroInstall.Capture.*" target="lib\net35" />
+        <file src="..\build\Release\Tools\ZeroInstall.Publish.*" target="lib\net35" />
 
         <!-- Satellite assemblies (translations) -->
-        <file src="..\build\Release\Tools\de\ZeroInstall.Capture.resources.dll" target="lib\net20\de" />
-        <file src="..\build\Release\Tools\de\ZeroInstall.Publish.resources.dll" target="lib\net20\de" />
+        <file src="..\build\Release\Tools\de\ZeroInstall.Capture.resources.dll" target="lib\net35\de" />
+        <file src="..\build\Release\Tools\de\ZeroInstall.Publish.resources.dll" target="lib\net35\de" />
 
         <!-- Source code -->
         <file src="..\src\Tools\Capture\**\*.cs" target="src\Capture" />
