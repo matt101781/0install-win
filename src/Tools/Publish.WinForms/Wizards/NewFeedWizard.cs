@@ -76,7 +76,6 @@ namespace ZeroInstall.Publish.WinForms.Wizards
                 _signedFeed = _feedBuilder.Build();
                 Close();
             };
-            installerPage.Exit += Close;
 
             PushPage(downloadPage);
         }
