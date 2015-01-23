@@ -137,9 +137,7 @@ namespace ZeroInstall.Publish
         /// </summary>
         public SignedFeed Build()
         {
-            #region Sanity checks
-            if (MainCandidate == null) throw new InvalidOperationException("MainCandidate is not set.");
-            #endregion
+            if (MainCandidate == null) MainCandidate = Candidates.First();
 
             var implementation =
                 new Implementation
@@ -148,9 +146,11 @@ namespace ZeroInstall.Publish
                     ManifestDigest = ManifestDigest,
                     Version = MainCandidate.Version,
                     Architecture = MainCandidate.Architecture,
-                    Commands = {MainCandidate.CreateCommand()},
-                    RetrievalMethods = {RetrievalMethod}
+                    Commands = {MainCandidate.CreateCommand()}
                 };
+            if (RetrievalMethod != null)
+                implementation.RetrievalMethods.Add(RetrievalMethod);
+
             var feed = new Feed
             {
                 Name = MainCandidate.Name,
@@ -170,10 +170,10 @@ namespace ZeroInstall.Publish
             };
             feed.Icons.AddRange(_icons);
 
-            foreach (var candidate in _candidates.Except(MainCandidate)
-                .DistinctBy(x => x.CreateCommand().Name))
+            foreach (var candidate in _candidates.Except(MainCandidate))
             {
                 var command = candidate.CreateCommand();
+                if (implementation.ContainsCommand(command.Name)) continue;
                 implementation.Commands.Add(command);
                 feed.EntryPoints.Add(new EntryPoint
                 {

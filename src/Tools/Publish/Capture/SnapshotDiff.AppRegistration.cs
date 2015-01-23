@@ -28,12 +28,11 @@ using ZeroInstall.Store.Model.Capabilities;
 
 namespace ZeroInstall.Publish.Capture
 {
-    public partial class CaptureDir
+    partial class SnapshotDiff
     {
         /// <summary>
-        /// Retrieves data about registered applications aindicated by a snapshot diff.
+        /// Retrieves data about registered applications.
         /// </summary>
-        /// <param name="snapshotDiff">The elements added between two snapshots.</param>
         /// <param name="commandMapper">Provides best-match command-line to <see cref="Command"/> mapping.</param>
         /// <param name="capabilities">The capability list to add the collected data to.</param>
         /// <param name="appName">Is set to the name of the application as displayed to the user; unchanged if the name was not found.</param>
@@ -41,22 +40,21 @@ namespace ZeroInstall.Publish.Capture
         /// <exception cref="IOException">There was an error accessing the registry.</exception>
         /// <exception cref="UnauthorizedAccessException">Read access to the registry was not permitted.</exception>
         /// <exception cref="SecurityException">Read access to the registry was not permitted.</exception>
-        private static AppRegistration GetAppRegistration([NotNull] Snapshot snapshotDiff, [NotNull] CommandMapper commandMapper, [NotNull] CapabilityList capabilities, ref string appName, ref string appDescription)
+        public AppRegistration GetAppRegistration([NotNull] CommandMapper commandMapper, [NotNull] CapabilityList capabilities, ref string appName, ref string appDescription)
         {
             #region Sanity checks
-            if (snapshotDiff == null) throw new ArgumentNullException("snapshotDiff");
             if (capabilities == null) throw new ArgumentNullException("capabilities");
             if (commandMapper == null) throw new ArgumentNullException("commandMapper");
             #endregion
 
             // Ambiguity warnings
-            if (snapshotDiff.RegisteredApplications.Length == 0)
+            if (RegisteredApplications.Length == 0)
                 return null;
-            if (snapshotDiff.RegisteredApplications.Length > 1)
+            if (RegisteredApplications.Length > 1)
                 Log.Warn(Resources.MultipleRegisteredAppsDetected);
 
             // Get registry path pointer
-            string appRegName = snapshotDiff.RegisteredApplications[0];
+            string appRegName = RegisteredApplications[0];
             var capabilitiesRegPath = RegistryUtils.GetString(@"HKEY_LOCAL_MACHINE\" + DesktopIntegration.Windows.AppRegistration.RegKeyMachineRegisteredApplications, appRegName);
             if (string.IsNullOrEmpty(capabilitiesRegPath))
                 return null;

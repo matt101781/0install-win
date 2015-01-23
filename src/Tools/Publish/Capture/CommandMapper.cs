@@ -28,7 +28,7 @@ namespace ZeroInstall.Publish.Capture
     /// <summary>
     /// Maps command-lines to the best matching <see cref="Command"/>.
     /// </summary>
-    public class CommandMapper
+    internal class CommandMapper
     {
         #region Private structs
         /// <summary>
