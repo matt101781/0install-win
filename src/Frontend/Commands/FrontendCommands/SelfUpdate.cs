@@ -20,11 +20,11 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using NanoByte.Common;
 using NanoByte.Common.Info;
+using NanoByte.Common.Native;
 using NanoByte.Common.Storage;
 using NanoByte.Common.Tasks;
 using NDesk.Options;
 using ZeroInstall.Commands.Properties;
-using ZeroInstall.Store;
 using ZeroInstall.Store.Implementations;
 using ZeroInstall.Store.Model;
 
@@ -93,17 +93,24 @@ namespace ZeroInstall.Commands.FrontendCommands
             if (UpdateFound())
             {
                 DownloadUncachedImplementations();
+
                 Handler.CancellationToken.ThrowIfCancellationRequested();
-                return LaunchImplementation();
+                var process = LaunchImplementation();
+                if (process == null) return 0;
+                if (NoWait) return (WindowsUtils.IsWindows ? process.Id : 0);
+                else
+                {
+                    process.WaitForExit();
+                    return process.ExitCode;
+                }
             }
             else
             {
                 Handler.OutputLow(Resources.ChangesFound, Resources.NoUpdatesFound);
-                return 1;
+                return 0;
             }
         }
 
-        #region Helpers
         private bool UpdateFound()
         {
             var currentVersion = new ImplementationVersion(AppInfo.Current.Version);
@@ -111,6 +118,5 @@ namespace ZeroInstall.Commands.FrontendCommands
             bool updatesFound = newVersion > currentVersion || _force;
             return updatesFound;
         }
-        #endregion
     }
 }
